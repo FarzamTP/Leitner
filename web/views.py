@@ -186,7 +186,4 @@ def add_new_flashcard(request):
         flashcard = FlashCart.objects.create(category=category, word=word, definition=definition,
                                              synonyms=synonyms, antonyms=antonyms, example=example)
         flashcard.save()
-        print("category_name", category_name)
-        print("page:", page)
-        print("lv:", lv)
         return redirect(category_page_render, category_name, lv, page)
