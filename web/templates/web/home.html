@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Home</title>
+{% endblock %}
+
+{% block body %}
+    <h3 class="alert alert-primary">Welcome back <b>{{ request.user.username }}</b>!</h3>
+
+    {# Success Alert #}
+    {% ifequal status 200 %}
+        <div class="alert alert-success">
+            <h3>Your category <b>{{ category_name }}</b> has been created successfully!</h3>
+        </div>
+    {% endifequal %}
+
+    {% ifequal status 201 %}
+        <div class="alert alert-success">
+            <h3>Your category <b>{{ category_name }}</b> has been edited successfully!</h3>
+        </div>
+    {% endifequal %}
+
+    {% ifequal status 202 %}
+        <div class="alert alert-success">
+            <h3>Your category <b>{{ category_name }}</b> has been deleted successfully!</h3>
+        </div>
+    {% endifequal %}
+
+    <div class="alert alert-warning">
+        {#  Buttons Row  #}
+        <div class="row" style="text-align: center">
+            {# Add Category #}
+            <div class="md col-md-4">
+                <button class="btn btn-primary" id="add_category" style="background-color: #799ff9; color: darkblue">Add New Category</button>
+                <br>
+            </div>
+            {# Edit Category #}
+            <div class="md col-md-4">
+                <button class="btn btn-warning" id="edit_category" style="background-color: #f7dc8e; color: saddlebrown">Edit Category</button>
+                <br>
+            </div>
+            {# Delete Category #}
+            <div class="md col-md-4">
+                <button class="btn btn-danger" id="delete_category" style="background-color: #f7bdbd; color: #7b3d11">Delete Category</button>
+                <br>
+            </div>
+        </div>
+
+        {# Add category form #}
+        <div id="add_category_form">
+            {% csrf_token %}
+            <form action="{% url "home" %}" method="post">
+                <br>
+                <div class="row" style="text-align: center">
+                    {# Category Name #}
+                    <div class="md col-md-4">
+                        <input name="category_name" type="text" id="category_name" class="fadeIn category_input" placeholder="Category name" required><br>
+                    </div>
+
+                    {# Category Color #}
+                    <div class="md col-md-4">
+                        {% csrf_token %}
+                        <br>
+                        <p>Category's indicator: <input name="color_hex_code" type="color" id="category_color_code" class="fadeIn"></p>
+                    </div>
+
+                    <input type="text" value="add_category" name="action_type" hidden>
+
+                    <div class="md col-md-4">
+                        <br>
+                        <button type="submit" class="btn btn-primary" style="background-color: #799ff9; color: darkblue">Add New Category</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {# Edit category form #}
+        <div id="edit_category_form">
+            <form action="{% url "home" %}" method="post">
+                {% csrf_token %}
+                <br>
+                <div class="row" style="text-align: center">
+                    {# Category Name #}
+                    <div class="md col-md-3">
+                        <br>
+                        <p>Category Name:
+                        <select name="category_name" id="category_name_selector">
+                            {% for category in user_categories %}
+                                <option value="{{ category.name }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                        </p>
+                    </div>
+
+                    {# Category New Name #}
+                    <div class="md col-md-3">
+                        <input type="text" name="new_category_name" id="new_category_name" value="{{ user_categories.0.name }}">
+                    </div>
+
+                    {# Category Color #}
+                    <div class="md col-md-3">
+                        <br>
+                        <p>Category's indicator: <input name="color_hex_code" type="color" id="edit_category_color_code" value="{{ user_categories.0.color }}"></p>
+                    </div>
+
+                    <input type="text" value="edit_category" name="action_type" hidden>
+
+                    <div class="md col-md-3">
+                        <br>
+                        <button type="submit" class="btn btn-warning" style="background-color: #f7dc8e; color: saddlebrown">Edit Category</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {# Delete Category Form #}
+        <div id="delete_category_form">
+            <form action="{% url "home" %}" method="post">
+                {% csrf_token %}
+                <br>
+                <div class="row" style="text-align: center">
+                    <div class="md col-md-6">
+                        <br>
+                        <p>Category Name:
+                        <select name="category_name" id="category_name">
+                            {% for category in user_categories %}
+                                <option value="{{ category.name }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                        </p>
+                    </div>
+
+                    <input type="text" value="delete_category" name="action_type" hidden>
+
+                    <div class="md col-md-6">
+                        <br>
+                        <button type="submit" class="btn btn-danger" style="background-color: #f7bdbd; color: #7b3d11">Delete Category</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if user_categories|length != 0 %}
+        {# User Categories #}
+        <div class="alert alert-info">
+        <div class="row" style="text-align: center">
+            {% for category in user_categories %}
+                <div class="md col-md-4">
+                    <form action="{{ category.name }}/0/0" method="get">
+                        <button type="submit" class="btn" style="background-color: {{ category.color }}">
+                            {{ category.name }} <br> Number of Flashcards: <b>{{ category.number_of_flashcards }}</b>
+                        </button>
+                    </form>
+                    <br>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

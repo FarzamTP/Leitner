@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Index Page</title>
+{% endblock %}
+
+{% block body %}
+    {% ifnotequal lv 0 %}
+        {% if selected_flashcard %}
+            {#  Word Section  #}
+            <div class="alert alert-info">
+            <div class="row">
+                <div class="md col-md-6">
+                    <h3><b>{{ selected_flashcard.word }}</b> | <span style="color: red">Lv.{{ selected_flashcard.lv }}</span></h3>
+                    <p>Word {{ current_page_demonstrator }} of {{ category_lv_len }}</p>
+                </div>
+
+                <div class="md col-md-6" style="text-align: right">
+                    <br><br>
+                    <div class="row">
+                        {% ifnotequal selected_flashcard.lv 5 %}
+                            <div class="md col-md-4">
+                                <br>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="text" name="action_type" value="lv_up" hidden>
+                                    <input type="text" name="flashcard_id" value="{{ selected_flashcard.id }}" hidden>
+                                    <button class="btn btn-success" id="I_know_word_button">I Know!</button>
+                                </form>
+                            </div>
+                        {% endifnotequal %}
+
+                        {% ifnotequal selected_flashcard.lv 1 %}
+                            <div class="md col-md-4">
+                                <br>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="text" name="action_type" value="lv_down" hidden>
+                                    <input type="text" name="flashcard_id" value="{{ selected_flashcard.id }}" hidden>
+                                    <button class="btn btn-danger" id="I_dont_know_word_button">I Don't Know!</button>
+                                </form>
+                            </div>
+                        {% endifnotequal %}
+
+                        <div class="md col-md-4">
+                            <br>
+                            <button class="btn btn-info" id="show_meaning">Show Meaning</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            {# Word extensions #}
+            <div class="row" id="word_extensions" style="display: none">
+                <div class="col col-md-12">
+                    <table class="table table-bordered table-light">
+                      <tbody>
+                        <tr>
+                          <th scope="row">Meaning</th>
+                          <td>{{ selected_flashcard.definition }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Synonym</th>
+                          <td>{{ selected_flashcard.synonyms }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Antonym</th>
+                          <td>{{ selected_flashcard.antonyms }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+
+            </div>
+
+            {# Paginator #}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if has_previous_page %}
+                        <li class="page-item"><a class="page-link" href="{{ previous_page_num }}">Previous</a></li>
+                    {% endif %}
+
+                    {% if has_next_page %}
+                        <li class="page-item"><a class="page-link" id="next_page" href="{{ next_page_num }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <div class="alert alert-success">
+                <div class="row">
+                    <div class="md col-md-12">
+                        <h3><b>Success!</b><br>Every word has been learned from this level!</h3>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endifnotequal %}
+
+    {#  Info Section  #}
+    <div class="alert alert-info">
+        <div class="row">
+            <div class="md col-md-3">
+                <form action="{% url 'home' %}" method="get">
+                    <input type="submit" value="Home" class="btn btn-warning">
+                </form>
+            </div>
+        </div>
+        <h4 style="text-align: center"><b style="color: {{ category.color }}">{{ category.name }}</b> containing <b>{{ category.number_of_flashcards }}</b> flashcards</h4>
+        <div class="row" style="text-align: center">
+            <div class="md col-md-6">
+                <br>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'category_page_render' category_name=category.name lv=1 page=0 %}">Lv.1 (New Words)</a>
+                        <span class="badge badge-primary badge-pill">{{ category.number_of_lv1 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'category_page_render' category_name=category.name lv=2 page=0 %}">
+                            Lv.2 (Recently Began To Study Words)</a>
+                        <span class="badge badge-primary badge-pill">{{ category.number_of_lv2 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'category_page_render' category_name=category.name lv=3 page=0 %}">Lv.3 (Getting To Know Words)</a>
+                        <span class="badge badge-primary badge-pill">{{ category.number_of_lv3 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'category_page_render' category_name=category.name lv=4 page=0 %}">Lv.4 (Conquering Words)</a>
+                        <span class="badge badge-primary badge-pill">{{ category.number_of_lv4 }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'category_page_render' category_name=category.name lv=5 page=0 %}">Lv.5 (Mastering Words)</a>
+                        <span class="badge badge-primary badge-pill">{{ category.number_of_lv5 }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="md col-md-6">
+                <br>
+                <form action="{% url 'add_new_flashcard' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="category_name" value="{{ category.name }}" hidden>
+                    <input type="text" name="lv" value="{{ lv }}" hidden>
+                    <input type="text" name="page" value="{{ page }}" hidden>
+                    <input type="text" name="word" placeholder="Word" required>
+                    <input type="text" name="definition" placeholder="Definition" required>
+                    <input type="text" name="synonyms" placeholder="Synonyms" required>
+                    <input type="text" name="antonyms" placeholder="Antonyms" required>
+                    <input type="text" name="example" placeholder="Example" required>
+                    <br><br>
+                    <button type="submit" class="btn btn-info">Add New Flashcard</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

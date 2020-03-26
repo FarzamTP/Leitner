@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>Index Page</title>
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+        <!-- Tabs Titles -->
+
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img src="{% static 'web/images/profile_pic.png' %}" id="icon" alt="User Icon" />
+        </div>
+
+        <!-- Login Form -->
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+            <input type="text" id="username" class="fadeIn second" name="username" placeholder="Username">
+            <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password">
+            <input type="submit" class="fadeIn fourth" value="Log In">
+        </form>
+        </div>
+    </div>
+
+{% endblock %}
