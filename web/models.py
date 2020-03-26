@@ -33,7 +33,6 @@ class FlashCart(models.Model):
     word = models.CharField(max_length=128)
     definition = models.CharField(max_length=512)
     synonyms = models.CharField(max_length=512)
-    antonyms = models.CharField(max_length=512)
     example = models.CharField(max_length=1024, default=None)
     lv = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
 

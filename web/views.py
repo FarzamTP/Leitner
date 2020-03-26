@@ -178,12 +178,11 @@ def add_new_flashcard(request):
         word = request.POST.get('word')
         definition = request.POST.get('definition')
         synonyms = request.POST.get('synonyms')
-        antonyms = request.POST.get('antonyms')
         example = request.POST.get('example')
 
         category = Category.objects.all().filter(name=category_name)[0]
 
         flashcard = FlashCart.objects.create(category=category, word=word, definition=definition,
-                                             synonyms=synonyms, antonyms=antonyms, example=example)
+                                             synonyms=synonyms, example=example)
         flashcard.save()
         return redirect(category_page_render, category_name, lv, page)
