@@ -56,7 +56,6 @@ $(document).ready(function () {
 
     $("#sender").change(function () {
         var user_id = $(this).val();
-
         // Gets user categories names
         $.ajax({
             url: 'get_selected_user_categories/',

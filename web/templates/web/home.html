@@ -149,7 +149,7 @@
     </div>
 
     {#  Extend ownership of category  #}
-    {% if request.user.is_authenticated %}
+    {% if request.user.is_superuser %}
         <div class="alert alert-danger">
         <h3>Extend Category</h3>
             <br>
