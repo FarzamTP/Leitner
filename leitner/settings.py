@@ -25,7 +25,7 @@ SECRET_KEY = 'l4g5u9eiri*=8upby+ck*j8xfw+3!a8l656(owyk7wbj@p*(cg'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['faazi.ir']
+ALLOWED_HOSTS = ['lytner.ir', 'www.lytner.ir', 'localhost']
 
 
 # Application definition

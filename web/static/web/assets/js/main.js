@@ -54,4 +54,23 @@ $(document).ready(function () {
         $("#word_extensions").slideToggle("slow");
     });
 
+    $("#sender").change(function () {
+        var user_id = $(this).val();
+
+        // Gets user categories names
+        $.ajax({
+            url: 'get_selected_user_categories/',
+            type: 'POST',
+            dataType: 'json',
+            data: {'user_id': user_id},
+            success: function (data) {
+                var select = $("#sender_category_name");
+                for(var i = 0; i < data.user_categories_name.length; i++){
+                    var category_name = data.user_categories_name[i];
+                    select.append(new Option(category_name, category_name));
+                }
+            }
+        });
+    });
+
 });

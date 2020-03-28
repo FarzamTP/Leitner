@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login
@@ -29,8 +30,14 @@ def index(request):
 @login_required
 def home(request):
     user_categories = Category.objects.all().filter(owner=request.user.userprofile)
+    if request.user.is_authenticated:
+        users = User.objects.all()
+    else:
+        users = None
+
     if request.method == "GET":
-        return render(request, 'web/home.html', context={'user_categories': user_categories})
+        return render(request, 'web/home.html', context={'user_categories': user_categories,
+                                                         'users': users})
     else:
         action_type = request.POST.get('action_type')
         if action_type == "add_category":
@@ -62,9 +69,42 @@ def home(request):
             category.delete()
 
             status = 202
+
+        elif action_type == "inherit_category":
+            sender_id = request.POST.get('sender')
+            receiver_id = request.POST.get('receiver')
+            category_name = request.POST.get('category_name')
+
+            print(sender_id, receiver_id, category_name)
+
+            sender = User.objects.all().filter(pk=sender_id)[0]
+            receiver = User.objects.all().filter(pk=receiver_id)[0]
+
+            category = Category.objects.all().filter(owner=sender.userprofile, name=category_name)[0]
+
+            category_flashcard = FlashCart.objects.all().filter(category=category)
+
+            receiver_category = category
+            receiver_category.pk = None
+            receiver_category.number_of_flashcards = 0
+            receiver_category.number_of_lv1 = 0
+            receiver_category.number_of_lv2 = 0
+            receiver_category.number_of_lv3 = 0
+            receiver_category.number_of_lv4 = 0
+            receiver_category.number_of_lv5 = 0
+            category.owner = receiver.userprofile
+            receiver_category.save()
+
+            for flashcard in category_flashcard:
+                flashcard.pk = None
+                flashcard.category = receiver_category
+                flashcard.save()
+            status = 203
+
         return render(request, 'web/home.html', context={'status': status,
                                                          'category_name': category_name,
-                                                         'user_categories': user_categories})
+                                                         'user_categories': user_categories,
+                                                         'users': users})
 
 
 @csrf_exempt
@@ -186,3 +226,15 @@ def add_new_flashcard(request):
                                              synonyms=synonyms, example=example)
         flashcard.save()
         return redirect(category_page_render, category_name, lv, page)
+
+
+@csrf_exempt
+@login_required
+def get_selected_user_categories(request):
+    user_id = request.POST.get('user_id')
+    user = User.objects.all().filter(pk=user_id)[0]
+    user_categories = Category.objects.all().filter(owner=user.userprofile)
+    user_categories_name = []
+    for category in user_categories:
+        user_categories_name.append(category.name)
+    return JsonResponse(data={'user_categories_name': user_categories_name})

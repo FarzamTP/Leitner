@@ -27,6 +27,12 @@
         </div>
     {% endifequal %}
 
+    {% ifequal status 203 %}
+        <div class="alert alert-success">
+            <h3>Your category <b>{{ category_name }}</b> has been heritated!</h3>
+        </div>
+    {% endifequal %}
+
     <div class="alert alert-warning">
         {#  Buttons Row  #}
         <div class="row" style="text-align: center">
@@ -141,6 +147,52 @@
             </form>
         </div>
     </div>
+
+    {#  Extend ownership of category  #}
+    {% if request.user.is_authenticated %}
+        <div class="alert alert-danger">
+        <h3>Extend Category</h3>
+            <br>
+            <form action="{% url 'home' %}" method='post'>
+                <div class="row" style="text-align: center">
+                    {% csrf_token %}
+                    <input type="text" name="action_type" value="inherit_category" hidden>
+
+                    <div class="col col-md-3">
+                        {# Owner #}
+                        <select name="sender" id="sender" class="browser-default custom-select">
+                            <option disabled selected>Owner</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}" id="sender">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col col-md-3">
+                        {# Owner Categories #}
+                        <select name="category_name" id="sender_category_name" class="browser-default custom-select">
+                            <option value="" disabled selected>Category name</option>
+                        </select>
+                    </div>
+
+                    <div class="col col-md-3">
+                        {# Receiver #}
+                        <select name="receiver" id="receiver" class="browser-default custom-select">
+                            <option value="Receiver" disabled selected>Receiver Name</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col col-md-3">
+                        {# Button #}
+                        <button type="submit" class="btn btn-info">Inherit Category</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
 
     {% if user_categories|length != 0 %}
         {# User Categories #}

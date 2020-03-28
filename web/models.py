@@ -13,7 +13,7 @@ class UserProfile(models.Model):
 
 
 class Category(models.Model):
-    owner = models.ForeignKey(UserProfile, default=None, on_delete=models.CASCADE)
+    owner = models.ForeignKey(UserProfile, default=None, on_delete=models.CASCADE, related_name='owner')
     name = models.CharField(max_length=32, blank=True, default=None)
     color = models.CharField(blank=True, default=None, max_length=16)
     number_of_flashcards = models.IntegerField(default=0)
