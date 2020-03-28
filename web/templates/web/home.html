@@ -6,7 +6,10 @@
 {% endblock %}
 
 {% block body %}
-    <h3 class="alert alert-primary">Welcome back <b>{{ request.user.username }}</b>!</h3>
+    <h3 class="alert alert-primary">Welcome back <b>{{ request.user.username }}</b>!
+        <br>
+    <span><h5><a href="{% url 'logout_user' %}">Logout</a></h5></span>
+    </h3>
 
     {# Success Alert #}
     {% ifequal status 200 %}

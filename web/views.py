@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Category, FlashCart
@@ -25,6 +25,13 @@ def index(request):
                 return HttpResponse("User not found!")
     else:
         return redirect(home)
+
+
+@login_required
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect(index)
 
 
 @login_required
