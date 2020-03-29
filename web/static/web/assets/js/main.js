@@ -8,6 +8,10 @@ $(document).ready(function () {
             $("#delete_category_form").slideUp("slow");
         }
 
+        if($("#inherit_ownership_form").is(":visible")){
+            $("#inherit_ownership_form").slideUp("slow");
+        }
+
         $("#add_category_form").slideToggle("slow");
     });
 
@@ -18,6 +22,10 @@ $(document).ready(function () {
 
         if($("#delete_category_form").is(":visible")){
             $("#delete_category_form").slideUp("slow");
+        }
+
+        if($("#inherit_ownership_form").is(":visible")){
+            $("#inherit_ownership_form").slideUp("slow");
         }
 
         $("#edit_category_form").slideToggle("slow");
@@ -32,7 +40,27 @@ $(document).ready(function () {
             $("#add_category_form").slideUp("slow");
         }
 
+        if($("#inherit_ownership_form").is(":visible")){
+            $("#inherit_ownership_form").slideUp("slow");
+        }
+
         $("#delete_category_form").slideToggle("slow");
+    });
+
+    $("#inherit_ownership").click(function () {
+        if($("#delete_category_form").is(":visible")){
+            $("#delete_category_form").slideUp("slow");
+        }
+
+        if($("#edit_category_form").is(":visible")){
+            $("#edit_category_form").slideUp("slow");
+        }
+
+        if($("#add_category_form").is(":visible")){
+            $("#add_category_form").slideUp("slow");
+        }
+
+        $("#inherit_ownership_form").slideToggle("slow");
     });
 
     $("#category_name_selector").change(function () {

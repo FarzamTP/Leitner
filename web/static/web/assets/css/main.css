@@ -268,7 +268,7 @@ a.category_color:hover, a.category_color:visited, a.category_color.link, a.categ
   color: black;
 }
 
-#add_category_form, #edit_category_form, #delete_category_form {
+#add_category_form, #edit_category_form, #delete_category_form, #inherit_ownership_form {
   display: none;
 }
 

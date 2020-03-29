@@ -51,8 +51,8 @@ def home(request):
             category_name = request.POST.get('category_name')
             category_color_hex_code = request.POST.get('color_hex_code')
 
-            category = Category(owner=request.user.userprofile, name=category_name, color=category_color_hex_code)
-            category.save()
+            sender_category = Category(owner=request.user.userprofile, name=category_name, color=category_color_hex_code)
+            sender_category.save()
 
             status = 200
         elif action_type == "edit_category":
@@ -60,20 +60,20 @@ def home(request):
             category_color_hex_code = request.POST.get('color_hex_code')
             category_new_name = request.POST.get('new_category_name')
 
-            category = Category.objects.all().filter(owner=request.user.userprofile,
-                                                     name=category_name)[0]
+            sender_category = Category.objects.all().filter(owner=request.user.userprofile,
+                                                            name=category_name)[0]
 
-            category.name = category_new_name
-            category.color = category_color_hex_code
-            category.save()
+            sender_category.name = category_new_name
+            sender_category.color = category_color_hex_code
+            sender_category.save()
 
             status = 201
 
         elif action_type == "delete_category":
             category_name = request.POST.get('category_name')
-            category = Category.objects.all().filter(owner=request.user.userprofile,
-                                                     name=category_name)[0]
-            category.delete()
+            sender_category = Category.objects.all().filter(owner=request.user.userprofile,
+                                                            name=category_name)[0]
+            sender_category.delete()
 
             status = 202
 
@@ -83,30 +83,49 @@ def home(request):
                 receiver_id = request.POST.get('receiver')
                 category_name = request.POST.get('category_name')
 
-                print(sender_id, receiver_id, category_name)
-
                 sender = User.objects.all().filter(pk=sender_id)[0]
                 receiver = User.objects.all().filter(pk=receiver_id)[0]
 
-                category = Category.objects.all().filter(owner=sender.userprofile, name=category_name)[0]
+                sender_category = Category.objects.all().filter(owner=sender.userprofile, name=category_name)[0]
 
-                category_flashcard = FlashCart.objects.all().filter(category=category)
+                category_flashcard = FlashCart.objects.all().filter(category=sender_category)
 
-                receiver_category = category
-                receiver_category.pk = None
-                receiver_category.number_of_flashcards = 0
-                receiver_category.number_of_lv1 = 0
-                receiver_category.number_of_lv2 = 0
-                receiver_category.number_of_lv3 = 0
-                receiver_category.number_of_lv4 = 0
-                receiver_category.number_of_lv5 = 0
-                category.owner = receiver.userprofile
-                receiver_category.save()
+                receiver_category_name = str(category_name + '_Inherited_from_%s' % sender.username.strip())
 
-                for flashcard in category_flashcard:
-                    flashcard.pk = None
-                    flashcard.category = receiver_category
-                    flashcard.save()
+                if not Category.objects.all().filter(owner=receiver.userprofile, name=receiver_category_name).exists():
+                    receiver_category = sender_category
+                    receiver_category.pk = None
+                    receiver_category.name = receiver_category_name
+                    receiver_category.number_of_flashcards = 0
+                    receiver_category.number_of_lv1 = 0
+                    receiver_category.number_of_lv2 = 0
+                    receiver_category.number_of_lv3 = 0
+                    receiver_category.number_of_lv4 = 0
+                    receiver_category.number_of_lv5 = 0
+                    receiver_category.owner = receiver.userprofile
+                    receiver_category.save()
+
+                    for flashcard in category_flashcard:
+                        flashcard.pk = None
+                        flashcard.lv = 1
+                        flashcard.category = receiver_category
+                        flashcard.save()
+                else:
+                    receiver_category = Category.objects.all().filter(owner=receiver.userprofile,
+                                                                      name=receiver_category_name)[0]
+
+                    receiver_category_flashcards = FlashCart.objects.all().filter(category=receiver_category)
+
+                    receiver_category_flashcards_words = []
+                    for flashcard in receiver_category_flashcards:
+                        receiver_category_flashcards_words.append(flashcard.word)
+
+                    for flashcard in category_flashcard:
+                        if not flashcard.word in receiver_category_flashcards_words:
+                            flashcard.pk = None
+                            flashcard.category = receiver_category
+                            flashcard.save()
+
                 status = 203
 
         return render(request, 'web/home.html', context={'status': status,
@@ -136,6 +155,7 @@ def category_page_render(request, category_name, lv, page):
 
     category = Category.objects.all().filter(owner=request.user.userprofile,
                                              name=category_name)[0]
+
     if lv != 0:
         category_flashcards = FlashCart.objects.all().filter(category=category, lv=lv)
     else:

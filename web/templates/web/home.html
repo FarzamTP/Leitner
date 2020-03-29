@@ -36,25 +36,56 @@
         </div>
     {% endifequal %}
 
+    {# Buttons #}
     <div class="alert alert-warning">
-        {#  Buttons Row  #}
-        <div class="row" style="text-align: center">
-            {# Add Category #}
-            <div class="md col-md-4">
-                <button class="btn btn-primary" id="add_category" style="background-color: #799ff9; color: darkblue">Add New Category</button>
-                <br>
+        {#  ADMIN Buttons Row  #}
+        {% if request.user.is_superuser %}
+            <div class="row" style="text-align: center">
+                {# Add Category #}
+                <div class="md col-md-3">
+                    <button class="btn btn-primary" id="add_category" style="background-color: #799ff9; color: darkblue">Add New Category</button>
+                    <br>
+                </div>
+
+                {# Edit Category #}
+                <div class="md col-md-3">
+                    <button class="btn btn-warning" id="edit_category" style="background-color: #f7dc8e; color: saddlebrown">Edit Category</button>
+                    <br>
+                </div>
+
+                {# Delete Category #}
+                <div class="md col-md-3">
+                    <button class="btn btn-danger" id="delete_category" style="background-color: #f7bdbd; color: #7b3d11">Delete Category</button>
+                    <br>
+                </div>
+
+                {# Inherit Category #}
+                <div class="md col-md-3">
+                    <button class="btn btn-success" id="inherit_ownership">Inherit Category</button>
+                    <br>
+                </div>
             </div>
-            {# Edit Category #}
-            <div class="md col-md-4">
-                <button class="btn btn-warning" id="edit_category" style="background-color: #f7dc8e; color: saddlebrown">Edit Category</button>
-                <br>
-            </div>
-            {# Delete Category #}
-            <div class="md col-md-4">
+
+        {# NON-ADMIN Button Row #}
+        {% else %}
+            <div class="row" style="text-align: center">
+                {# Add Category #}
+                <div class="md col-md-4">
+                    <button class="btn btn-primary" id="add_category" style="background-color: #799ff9; color: darkblue">Add New Category</button>
+                    <br>
+                </div>
+                {# Edit Category #}
+                <div class="md col-md-4">
+                    <button class="btn btn-warning" id="edit_category" style="background-color: #f7dc8e; color: saddlebrown">Edit Category</button>
+                    <br>
+                </div>
+                {# Delete Category #}
+                <div class="md col-md-4">
                 <button class="btn btn-danger" id="delete_category" style="background-color: #f7bdbd; color: #7b3d11">Delete Category</button>
                 <br>
             </div>
-        </div>
+            </div>
+        {% endif %}
 
         {# Add category form #}
         <div id="add_category_form">
@@ -94,7 +125,7 @@
                     <div class="md col-md-3">
                         <br>
                         <p>Category Name:
-                        <select name="category_name" id="category_name_selector">
+                        <select name="category_name" id="category_name_selector" class="browser-default custom-select">
                             {% for category in user_categories %}
                                 <option value="{{ category.name }}">{{ category.name }}</option>
                             {% endfor %}
@@ -104,11 +135,14 @@
 
                     {# Category New Name #}
                     <div class="md col-md-3">
+                        <p>New Name:
                         <input type="text" name="new_category_name" id="new_category_name" value="{{ user_categories.0.name }}">
+                        </p>
                     </div>
 
                     {# Category Color #}
                     <div class="md col-md-3">
+                        <br>
                         <br>
                         <p>Category's indicator: <input name="color_hex_code" type="color" id="edit_category_color_code" value="{{ user_categories.0.color }}"></p>
                     </div>
@@ -132,7 +166,7 @@
                     <div class="md col-md-6">
                         <br>
                         <p>Category Name:
-                        <select name="category_name" id="category_name">
+                        <select name="category_name" id="category_name" class="browser-default custom-select">
                             {% for category in user_categories %}
                                 <option value="{{ category.name }}">{{ category.name }}</option>
                             {% endfor %}
@@ -149,54 +183,54 @@
                 </div>
             </form>
         </div>
+
+        {#  Extend ownership of category  #}
+        {% if request.user.is_superuser %}
+            <div id="inherit_ownership_form">
+                <br>
+                <form action="{% url 'home' %}" method='post'>
+                    <div class="row" style="text-align: center">
+                        {% csrf_token %}
+                        <input type="text" name="action_type" value="inherit_category" hidden>
+
+                        <div class="col col-md-3">
+                            {# Owner #}
+                            <select name="sender" id="sender" class="browser-default custom-select">
+                                <option disabled selected>Owner</option>
+                                {% for user in users %}
+                                    <option value="{{ user.id }}" id="sender">{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col col-md-3">
+                            {# Owner Categories #}
+                            <select name="category_name" id="sender_category_name" class="browser-default custom-select">
+                                <option value="" disabled selected>Category name</option>
+                            </select>
+                        </div>
+
+                        <div class="col col-md-3">
+                            {# Receiver #}
+                            <select name="receiver" id="receiver" class="browser-default custom-select">
+                                <option value="Receiver" disabled selected>Receiver Name</option>
+                                {% for user in users %}
+                                    <option value="{{ user.id }}">{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col col-md-3">
+                            {# Button #}
+                            <button type="submit" class="btn btn-info">Inherit Category</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
     </div>
 
-    {#  Extend ownership of category  #}
-    {% if request.user.is_superuser %}
-        <div class="alert alert-danger">
-        <h3>Extend Category</h3>
-            <br>
-            <form action="{% url 'home' %}" method='post'>
-                <div class="row" style="text-align: center">
-                    {% csrf_token %}
-                    <input type="text" name="action_type" value="inherit_category" hidden>
-
-                    <div class="col col-md-3">
-                        {# Owner #}
-                        <select name="sender" id="sender" class="browser-default custom-select">
-                            <option disabled selected>Owner</option>
-                            {% for user in users %}
-                                <option value="{{ user.id }}" id="sender">{{ user.username }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col col-md-3">
-                        {# Owner Categories #}
-                        <select name="category_name" id="sender_category_name" class="browser-default custom-select">
-                            <option value="" disabled selected>Category name</option>
-                        </select>
-                    </div>
-
-                    <div class="col col-md-3">
-                        {# Receiver #}
-                        <select name="receiver" id="receiver" class="browser-default custom-select">
-                            <option value="Receiver" disabled selected>Receiver Name</option>
-                            {% for user in users %}
-                                <option value="{{ user.id }}">{{ user.username }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col col-md-3">
-                        {# Button #}
-                        <button type="submit" class="btn btn-info">Inherit Category</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    {% endif %}
-
+    {# Show Categories #}
     {% if user_categories|length != 0 %}
         {# User Categories #}
         <div class="alert alert-info">
