@@ -4,6 +4,8 @@ words a lot easier.
 In current version (***1.1***) you can:
 * Add, modify and delete categories
 * Add new words to specific category
+* Admins can pull categories from one user to another one from their `home` page.
+
 
 #### Instructions
 Follow these steps on your server:
