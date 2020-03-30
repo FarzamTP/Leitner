@@ -24,8 +24,7 @@ class Category(models.Model):
     number_of_lv5 = models.IntegerField(default=0)
 
     def __str__(self):
-        return 'Owner: {} Name:{} Number of Flashcards: {}'.format(self.owner.user.username, self.name,
-                                                                   self.number_of_flashcards)
+        return 'Name: {} | Owner: {}'.format(self.name, self.owner.user.username)
 
 
 class FlashCart(models.Model):
@@ -37,7 +36,7 @@ class FlashCart(models.Model):
     lv = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
-        return '{}-{}-{}'.format(self.word, self.lv, self.category)
+        return 'Word: {} | lv: {} | Category {}'.format(self.word, self.lv, self.category)
 
 
 def create_profile(sender, **kwargs):
