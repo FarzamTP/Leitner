@@ -298,10 +298,10 @@ def BOT_get_user_detail(request):
 
         if len(user_categories) != 0:
             for category in user_categories:
-                user_data += "\t" + category.name + " (%d Flashcards)" % category.number_of_flashcards + "\n"
+                user_data += (category.name + " (%d Flashcards)" % category.number_of_flashcards + "\n")
         else:
             user_data += "None"
 
-        user_data += "Is active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword:%s " %\
+        user_data += "\nIs active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword:%s " %\
                      (user.is_active, user.is_staff, user.is_superuser, user.date_joined, user.last_login, user.password)
         return JsonResponse(data={'user_detail': user_data})
