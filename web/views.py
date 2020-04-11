@@ -5,7 +5,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Category, FlashCart
+from .models import Category, FlashCart, UserProfile
 
 
 # Create your views here.
@@ -266,3 +266,18 @@ def get_selected_user_categories(request):
     for category in user_categories:
         user_categories_name.append(category.name)
     return JsonResponse(data={'user_categories_name': user_categories_name})
+
+
+@csrf_exempt
+def BOT_get_all_users_data(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            all_users = UserProfile.objects.all()
+            return JsonResponse(data={'users_data': all_users})
+        else:
+            return JsonResponse(data={'users_data': 403})
+
