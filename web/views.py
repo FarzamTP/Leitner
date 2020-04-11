@@ -51,7 +51,8 @@ def home(request):
             category_name = request.POST.get('category_name')
             category_color_hex_code = request.POST.get('color_hex_code')
 
-            sender_category = Category(owner=request.user.userprofile, name=category_name, color=category_color_hex_code)
+            sender_category = Category(owner=request.user.userprofile, name=category_name,
+                                       color=category_color_hex_code)
             sender_category.save()
 
             status = 200
@@ -294,14 +295,21 @@ def BOT_get_user_detail(request):
 
         user_data = ":busts_in_silhouette: <b>%s</b>\n\nID: %s\nFirstName: %s\nLastName: %s\nEmail: " \
                     "%s\n\n<b>Categories</b>:\n" % (user.username, str(user.id), user.first_name,
-                                             user.last_name, user.email)
+                                                    user.last_name, user.email)
 
         if len(user_categories) != 0:
             for category in user_categories:
-                user_data += ("     ---> " + "<b><i>" + category.name + "</i>" + " (%d Flashcards)" % category.number_of_flashcards + "</b>\n")
+                user_data += ("     ---> " + "<b><i>" + category.name + "</i>" + " (%d Flashcards)" %
+                              category.number_of_flashcards + "</b>\n")
         else:
             user_data += "None\n"
 
-        user_data += "\nIs active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword: %s" %\
-                     (user.is_active, user.is_staff, user.is_superuser, user.date_joined, user.last_login, user.password)
-        return JsonResponse(data={'user_detail': user_data})
+        user_data += "\nIs active: %s\nIs staff: %s\nIs superuser: %s\n" \
+                     "Date joined: %s\nLast login: %s\nPassword: %s" % \
+                     (user.is_active, user.is_staff, user.is_superuser,
+                      user.date_joined, user.last_login, user.password)
+
+        user_categories = user_categories.values()
+
+        return JsonResponse(data={'user_detail': user_data,
+                                  'user_categories': list(user_categories)})
