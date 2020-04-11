@@ -292,7 +292,7 @@ def BOT_get_user_detail(request):
         user = User.objects.all().filter(pk=user_id)[0]
         user_categories = Category.objects.all().filter(owner=user.userprofile)
 
-        user_data = ":busts_in_silhouette: %s\nID: %s\nFirstName: %s\nLastName: %s\nEmail: " \
+        user_data = ":busts_in_silhouette: <b>%s</b>\nID: %s\nFirstName: %s\nLastName: %s\nEmail: " \
                     "%s\n\n<b>Categories</b>:\n" % (user.username, str(user.id), user.first_name,
                                              user.last_name, user.email)
 
@@ -302,6 +302,6 @@ def BOT_get_user_detail(request):
         else:
             user_data += "None\n"
 
-        user_data += "Is active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword:%s " %\
+        user_data += "\nIs active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword: %s" %\
                      (user.is_active, user.is_staff, user.is_superuser, user.date_joined, user.last_login, user.password)
         return JsonResponse(data={'user_detail': user_data})
