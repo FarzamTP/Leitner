@@ -331,4 +331,4 @@ def BOT_delete_category(request):
         user_remaining_categories = Category.objects.all().filter(owner=category_owner).values()
 
         return JsonResponse(data={'status': status,
-                                  'remaining_categories': user_remaining_categories})
+                                  'remaining_categories': list(user_remaining_categories)})
