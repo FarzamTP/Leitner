@@ -276,8 +276,8 @@ def BOT_get_all_users_data(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            all_users = UserProfile.objects.all()
-            return JsonResponse(data={'users_data': all_users})
+            all_users = UserProfile.objects.all().values()
+            return JsonResponse(data={'users_data': list(all_users)})
         else:
             return JsonResponse(data={'users_data': 403})
 
