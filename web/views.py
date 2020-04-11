@@ -292,11 +292,16 @@ def BOT_get_user_detail(request):
         user = User.objects.all().filter(pk=user_id)[0]
         user_categories = Category.objects.all().filter(owner=user.userprofile)
 
-        user_data = ":busts_in_silhouette:\nUserName: %s\nFirstName: %s\nLastName: %s\nEmail: %s\n<b>Categories</b>:\n"
+        user_data = ":busts_in_silhouette:\nID: %s\nUserName: %s\nFirstName: %s\nLastName: %s\nEmail: " \
+                    "%s\n<b>Categories</b>:\n" % (str(user.id), user.username, user.first_name,
+                                                  user.last_name, user.email)
 
         if len(user_categories) != 0:
             for category in user_categories:
                 user_data += "\t" + category.name + " (%d Flashcards)" % category.number_of_flashcards + "\n"
         else:
             user_data += "None"
+
+        user_data += "Is active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword:%s" %\
+                     (user.is_active, user.is_staff, user.is_superuser, user.date_joined, user.last_login, user.password)
         return JsonResponse(data={'user_detail': user_data})
