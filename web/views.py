@@ -320,7 +320,7 @@ def BOT_get_user_detail(request):
 def BOT_delete_category(request):
     if request.method == "POST":
         category_id = request.POST.get('category_id')
-        category_owner = Category.objects.all().filter(pk=category_id)[0].owner.user
+        category_owner = Category.objects.all().filter(pk=category_id)[0].owner
 
         if Category.objects.all().filter(pk=category_id).exists():
             Category.objects.all().filter(pk=category_id).delete()
