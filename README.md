@@ -19,7 +19,7 @@ This will clone this repository and prepare your server to host this web app.
 #### Updates
 ***v.1.2***:
 * Now you can use [Bot](./bot.py) to view or delete current users and categories!
-    * You only need to create your new bot at [BotFather](t.me/botfather) and command `/newBot`. <br>
+    * You only need to create your new bot at [BotFather](https://t.me/botfather) and command `/newBot`. <br>
     Then after you got your `TOKEN`, you should put in `your_token` section in `bot.py`.
     If you want this application to be run on your server, you should take care of the `your_site` variable. (e.g. it this app, I‌ used https://lytner.ir as my url site).
     * If you want it to be run locally, you just need to set it equal to `https://localhost:port`.
@@ -35,4 +35,4 @@ As you see the recipient's `Chat_id` is nor in `ALLOWED_CHAT_IDs`.
 This a sample of an allowed user that need to be authenticated later.
 
 **Note:** For further information if you want to check out a real, working version of the application,
-contact me via [Email](mailto:farzam.taghipour@gmail.com) or [Telegram](t.me/FarzamTaghipour).
+contact me via [Email](mailto:farzam.taghipour@gmail.com) or [Telegram](https://t.me/FarzamTaghipour).
