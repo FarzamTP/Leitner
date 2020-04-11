@@ -292,8 +292,8 @@ def BOT_get_user_detail(request):
         user = User.objects.all().filter(pk=user_id)[0]
         user_categories = Category.objects.all().filter(owner=user.userprofile)
 
-        user_data = ":busts_in_silhouette:\nID: %s\nUserName: %s\nFirstName: %s\nLastName: %s\nEmail: " \
-                    "%s\n<b>Categories</b>:\n" % (str(user.id), user.username, user.first_name,
+        user_data = ":busts_in_silhouette: %s\nID: %s\nFirstName: %s\nLastName: %s\nEmail: " \
+                    "%s\n<b>Categories</b>:\n" % (user.username, str(user.id), user.first_name,
                                                   user.last_name, user.email)
 
         if len(user_categories) != 0:
