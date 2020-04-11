@@ -284,3 +284,19 @@ def BOT_get_all_users_data(request):
         else:
             return JsonResponse(data={'users_data': 404})
 
+
+@csrf_exempt
+def BOT_get_user_detail(request):
+    if request.method == "POST":
+        user_id = request.POST.get('user_id')
+        user = User.objects.all().filter(pk=user_id)[0]
+        user_categories = Category.objects.all().filter(owner=user.userprofile)
+
+        user_data = ":busts_in_silhouette:\nUserName: %s\nFirstName: %s\nLastName: %s\nEmail: %s\n<b>Categories</b>:\n"
+
+        if len(user_categories) != 0:
+            for category in user_categories:
+                user_data += "\t" + category.name + " (%d Flashcards)" % category.number_of_flashcards + "\n"
+        else:
+            user_data += "None"
+        return JsonResponse(data={'user_detail': user_data})
