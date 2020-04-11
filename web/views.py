@@ -274,10 +274,13 @@ def BOT_get_all_users_data(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user and user.is_superuser:
-            login(request, user)
-            all_users = User.objects.all().values()
-            return JsonResponse(data={'users_data': list(all_users)})
+        if user:
+            if user.is_superuser:
+                login(request, user)
+                all_users = User.objects.all().values()
+                return JsonResponse(data={'users_data': list(all_users)})
+            else:
+                return JsonResponse(data={'users_data': 403})
         else:
-            return JsonResponse(data={'users_data': 403})
+            return JsonResponse(data={'users_data': 404})
 
