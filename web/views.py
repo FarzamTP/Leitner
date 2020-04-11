@@ -302,6 +302,6 @@ def BOT_get_user_detail(request):
         else:
             user_data += "None"
 
-        user_data += "Is active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword:%s" %\
+        user_data += "Is active: %s\nIs staff: %s\nIs superuser: %s\nDate joined: %s\nLast login: %s\nPassword:%s " %\
                      (user.is_active, user.is_staff, user.is_superuser, user.date_joined, user.last_login, user.password)
         return JsonResponse(data={'user_detail': user_data})
