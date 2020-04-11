@@ -312,4 +312,17 @@ def BOT_get_user_detail(request):
         user_categories = user_categories.values()
 
         return JsonResponse(data={'user_detail': user_data,
-                                  'user_categories': list(user_categories)})
+                                  'user_categories': list(user_categories),
+                                  'user_id': user_id})
+
+
+@csrf_exempt
+def BOT_delete_category(request):
+    if request.method == "POST":
+        category_id = request.POST.get('category_id')
+        if Category.objects.all().filter(pk=category_id).exists():
+            Category.objects.all().filter(pk=category_id).delete()
+            status = 200
+        else:
+            status = 404
+        return JsonResponse(data={'status': status})
