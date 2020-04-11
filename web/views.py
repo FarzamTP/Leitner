@@ -293,12 +293,12 @@ def BOT_get_user_detail(request):
         user_categories = Category.objects.all().filter(owner=user.userprofile)
 
         user_data = ":busts_in_silhouette: %s\nID: %s\nFirstName: %s\nLastName: %s\nEmail: " \
-                    "%s\n\nCategories:\n" % (user.username, str(user.id), user.first_name,
+                    "%s\n\n<b>Categories</b>:\n" % (user.username, str(user.id), user.first_name,
                                              user.last_name, user.email)
 
         if len(user_categories) != 0:
             for category in user_categories:
-                user_data += ("     ---> " + category.name + " (%d Flashcards)" % category.number_of_flashcards + "\n")
+                user_data += ("     ---> " + "<b><i>" + category.name + "</i>" + " (%d Flashcards)" % category.number_of_flashcards + "</b>\n")
         else:
             user_data += "None\n"
 
