@@ -26,6 +26,7 @@ This will clone this repository and prepare your server to host this web app.
     * You should take into notice that you need to be `superuser` to use the bot. to change it, you should edit 
     `ALLOWED_CHAT_IDs` in `bot.py`.
 
+
 ![Non-Authenticated user](./images/non_authenticated.jpg)
 
 As you see the recipient's `Chat_id` is nor in `ALLOWED_CHAT_IDs`.

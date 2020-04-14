@@ -4,11 +4,33 @@ from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import permissions, viewsets
 
-from .models import Category, FlashCart
+from .serializers import CategorySerializer, FlashCartSerializer, UserProfileSerializer
+from .models import Category, FlashCart, UserProfile
 
 
-# Create your views here.
+# =============================================REST-FrameWork-Classes===================================================
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class FlashCartViewSet(viewsets.ModelViewSet):
+    queryset = FlashCart.objects.all()
+    serializer_class = FlashCartSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+# =============================================Web-Application's-Views==================================================
 
 def index(request):
     if not request.user.is_authenticated:
@@ -269,6 +291,7 @@ def get_selected_user_categories(request):
     return JsonResponse(data={'user_categories_name': user_categories_name})
 
 
+# ==================================================Bot-Views===========================================================
 @csrf_exempt
 def BOT_get_all_users_data(request):
     if request.method == "POST":

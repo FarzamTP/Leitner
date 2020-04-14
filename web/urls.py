@@ -16,7 +16,7 @@ urlpatterns = [
     url('^add_new_flashcard/$', views.add_new_flashcard, name='add_new_flashcard'),
     path('home/<slug:category_name>/<int:lv>/<int:page>', views.category_page_render, name='category_page_render'),
 
-    # ===============================================BOT‌ URLS=========================================================
+    # ===============================================App‌ URLS=========================================================
 
     url('^api/get_all_users_data/', views.BOT_get_all_users_data, name='BOT_get_all_users_data'),
     url('^api/get_user_detail/', views.BOT_get_user_detail, name='BOT_get_user_detail'),
