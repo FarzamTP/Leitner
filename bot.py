@@ -19,7 +19,7 @@ class Bot:
     ]
 
     main_keyboard = ReplyKeyboardMarkup(keyboard=[
-        [KeyboardButton(text=emoji.emojize('All َUsers :busts_in_silhouette:', use_aliases=True)),
+        [KeyboardButton(text=emoji.emojize('All َUsers:busts_in_silhouette:', use_aliases=True)),
          ]
     ], one_time_keyboard=False, resize_keyboard=True)
 
