@@ -365,15 +365,17 @@ def BOT_search_word(request):
     if request.method == "POST":
         target_word = request.POST.get('word')
 
-        result = FlashCart.objects.none()
+        result_id = []
 
         for f in FlashCart.objects.all():
             if f.word.__contains__(target_word):
-                result.append(f)
+                result_id.append(f.id)
                 status = 200
             else:
                 status = 404
 
+        result = FlashCart.objects.filter(id__in=result_id).values()
+
         return JsonResponse(data={'status': status,
-                                  'search_result': result})
+                                  'search_result': list(result)})
 
