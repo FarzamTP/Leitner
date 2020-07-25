@@ -365,7 +365,7 @@ def BOT_search_word(request):
     if request.method == "POST":
         target_word = request.POST.get('word')
 
-        result = []
+        result = FlashCart.objects.none()
 
         for f in FlashCart.objects.all():
             if f.word.__contains__(target_word):
