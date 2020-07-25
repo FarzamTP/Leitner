@@ -9,6 +9,7 @@ from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboa
 authenticate_user_id = 0
 search_word_msg_id = 0
 all_users_list_keyboard = None
+word_search_result = None
 your_token = conf.your_token
 your_site = conf.your_site
 
@@ -69,23 +70,55 @@ class Bot:
                     else:
                         self.authenticate(chat_id)
                 elif text.__contains__("Search Word"):
-                    self.bot.sendMessage(chat_id, "Enter word:")
-                    global search_word_msg_id
-                    search_word_msg_id = message_id
+                    if all_users_list_keyboard:
+                        self.bot.sendMessage(chat_id, "Enter word:")
+                        global search_word_msg_id
+                        search_word_msg_id = message_id
+                    else:
+                        self.authenticate(chat_id)
                 else:
                     if message_id == search_word_msg_id + 2:
                         word = text
-                        r = requests.post(url='%s/api/search_word/' % your_site, data={'user_id': word})
-                        if r.status == 200:
-                            result = r.search_result
-                            print(result)
+                        r = requests.post(url='%s/api/search_word/' % your_site, data={'word': word})
+                        if r.status_code == 200:
+                            global word_search_result
+                            word_search_result = r.json().get('search_result')
+                            search_menu = self.generate_search_word_keyboard(word_search_result)
+                            self.bot.sendMessage(chat_id, "Choose word from menu:", reply_markup=search_menu)
                         else:
-                            print("404 Not found!")
+                            self.bot.sendMessage(chat_id, f"Entered word '{word}' doesn't exists.")
+
+                    elif len(text.split(". ")) == 2:
+                        searched_word_id = text.split('. ')[0]
+                        word_explanation = self.generate_word_search_result_msg(searched_word_id)
+                        self.bot.sendMessage(chat_id, word_explanation, parse_mode='HTML')
+                    elif text.__contains__("Main menu"):
+                        self.send_main_keyboard(chat_id)
         else:
             self.bot.sendMessage(chat_id, "You're not allowed to use this bot!\nThanks for your visit.\nBye Bye...")
             self.bot.sendSticker(chat_id,
                                  sticker='CAACAgIAAxkBAAMbXpGKhkeRhX2FZ4nfNSeWMVRJ4YwAAm8AA_cCyA_pM_2bB4KOMhgE')
         return
+
+    def generate_word_search_result_msg(self, word_id):
+        for word in word_search_result:
+            if str(word.get('id')) == str(word_id):
+                text = word.get('word')
+                definition = word.get('definition')
+                synonyms = word.get('synonyms')
+                example = word.get('example')
+                s = f"<b>{text}</b>:\n\n<b>Definition</b>:\n{definition}\n\n<b>Synonyms</b>:\n{synonyms}\n\n<b>Example:</b>\n {example}"
+                break
+        return s
+
+    def generate_search_word_keyboard(self, result_list):
+        keyboard = [[KeyboardButton(text=emoji.emojize(":arrow_backward: Main menu", use_aliases=True))]]
+        for word in result_list:
+            id = word.get('id')
+            w = word.get('word')
+            keyboard.append([KeyboardButton(text=f"{str(id)}. {w}")])
+        menu = ReplyKeyboardMarkup(keyboard=keyboard)
+        return menu
 
     def on_callback_query(self, msg):
         query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')

@@ -368,7 +368,7 @@ def BOT_search_word(request):
         result_id = []
 
         for f in FlashCart.objects.all():
-            if f.word.__contains__(target_word):
+            if f.word.lower().__contains__(target_word):
                 result_id.append(f.id)
                 status = 200
             else:
