@@ -363,12 +363,12 @@ def BOT_delete_category(request):
 @csrf_exempt
 def BOT_search_word(request):
     if request.method == "POST":
-        target_word = str(request.POST.get('word')).lower()
+        target_word = request.POST.get('word')
 
         result_id = []
 
         for f in FlashCart.objects.all():
-            if f.word.lower().__contains__(target_word):
+            if f.word.lower().__contains__(str(target_word).lower()):
                 result_id.append(f.id)
                 status = 200
             else:
