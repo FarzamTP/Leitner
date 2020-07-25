@@ -363,7 +363,7 @@ def BOT_delete_category(request):
 @csrf_exempt
 def BOT_search_word(request):
     if request.method == "POST":
-        target_word = request.POST.get('word')
+        target_word = str(request.POST.get('word')).lower()
 
         result_id = []
 
