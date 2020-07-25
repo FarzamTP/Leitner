@@ -100,4 +100,11 @@ $(document).ready(function () {
         });
     });
 
+    $("#search-word").click(function(){
+        if($("#search-word-form").is(":visible")){
+            $("#search-word-form").slideUp("slow");
+        } else {
+            $("#search-word-form").slideToggle("slow");
+        }
+    });
 });

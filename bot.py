@@ -2,24 +2,26 @@ import time
 import emoji as emoji
 import telepot
 import requests
+import conf
 from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 
 authenticate_user_id = 0
+search_word_msg_id = 0
 all_users_list_keyboard = None
-your_site = 'https://lytner.ir'
-your_token = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+your_token = conf.your_token
+your_site = conf.your_site
 
 
 class Bot:
     bot = telepot.Bot(your_token)
 
-    ALLOWED_CHAT_IDs = [
-        # 1234567890,
-    ]
+    ALLOWED_CHAT_IDs = conf.ALLOWED_CHAT_IDs
 
     main_keyboard = ReplyKeyboardMarkup(keyboard=[
         [KeyboardButton(text=emoji.emojize('All َUsers:busts_in_silhouette:', use_aliases=True)),
+         ],
+        [KeyboardButton(text=emoji.emojize('Search Word :mag:', use_aliases=True)),
          ]
     ], one_time_keyboard=False, resize_keyboard=True)
 
@@ -60,12 +62,25 @@ class Bot:
                 if text == '/start':
                     self.bot.sendMessage(chat_id, 'Hello')
                     self.send_main_keyboard(chat_id)
-                elif text == emoji.emojize('All َUsers :busts_in_silhouette:'):
+                elif text.__contains__("All َUsers"):
                     if all_users_list_keyboard:
                         self.bot.sendMessage(chat_id, emoji.emojize('All َUsers :busts_in_silhouette:'),
                                              reply_markup=all_users_list_keyboard)
                     else:
                         self.authenticate(chat_id)
+                elif text.__contains__("Search Word"):
+                    self.bot.sendMessage(chat_id, "Enter word:")
+                    global search_word_msg_id
+                    search_word_msg_id = message_id
+                else:
+                    if message_id == search_word_msg_id + 2:
+                        word = text
+                        r = requests.post(url='%s/api/search_word/' % your_site, data={'user_id': word})
+                        if r.status == 200:
+                            result = r.search_result
+                            print(result)
+                        else:
+                            print("404 Not found!")
         else:
             self.bot.sendMessage(chat_id, "You're not allowed to use this bot!\nThanks for your visit.\nBye Bye...")
             self.bot.sendSticker(chat_id,

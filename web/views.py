@@ -358,3 +358,22 @@ def BOT_delete_category(request):
 
         return JsonResponse(data={'status': status,
                                   'remaining_categories': list(user_remaining_categories)})
+
+
+@csrf_exempt
+def BOT_search_word(request):
+    if request.method == "POST":
+        target_word = request.POST.get('word')
+
+        result = []
+
+        for f in FlashCart.objects.all():
+            if f.word.__contains__(target_word):
+                result.append(f)
+                status = 200
+            else:
+                status = 404
+
+        return JsonResponse(data={'status': status,
+                                  'search_result': result})
+

@@ -21,4 +21,5 @@ urlpatterns = [
     url('^api/get_all_users_data/', views.BOT_get_all_users_data, name='BOT_get_all_users_data'),
     url('^api/get_user_detail/', views.BOT_get_user_detail, name='BOT_get_user_detail'),
     url('^api/delete_category/', views.BOT_delete_category, name='BOT_delete_category'),
+    url('^api/search_word/', views.BOT_search_word, name='BOT_search_word'),
 ]
