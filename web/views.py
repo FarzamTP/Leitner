@@ -180,9 +180,9 @@ def category_page_render(request, category_name, lv, page):
                                              name=category_name)[0]
 
     if lv != 0:
-        category_flashcards = FlashCart.objects.all().filter(category=category, lv=lv)
+        category_flashcards = FlashCart.objects.all().filter(category=category, lv=lv).order_by('word')
     else:
-        category_flashcards = FlashCart.objects.all().filter(category=category)
+        category_flashcards = FlashCart.objects.all().filter(category=category).order_by('word')
 
     if page < len(category_flashcards) - 1:
         has_next_page = True
@@ -271,7 +271,8 @@ def add_new_flashcard(request):
         synonyms = request.POST.get('synonyms')
         example = request.POST.get('example')
 
-        category = Category.objects.all().filter(name=category_name)[0]
+        owner = UserProfile.objects.all().filter(user=request.user)[0]
+        category = Category.objects.all().filter(name=category_name, owner=owner)[0]
 
         flashcard = FlashCart.objects.create(category=category, word=word, definition=definition,
                                              synonyms=synonyms, example=example)
